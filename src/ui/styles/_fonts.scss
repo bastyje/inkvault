@@ -1,0 +1,54 @@
+@import url('https://fonts.googleapis.com/css2?family=Assistant:wght@200;300;400;500;600;700;800&display=swap');
+
+:root {
+
+}
+
+* {
+  font-family: 'Assistant', sans-serif;
+  color: var(--primary-100-text);
+  font-weight: 600;
+}
+
+.HUGE {
+  font-size: 48.83px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+}
+
+.LARGE {
+  font-size: 31.25px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+}
+
+.normal {
+  font-size: 16px; // TODO change to rem
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+}
+
+.normal--bold {
+  font-weight: 700;
+}
+
+.small {
+  font-size: 12.8px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+}
+
+.small--bold {
+  font-weight: 700;
+}
+
+.normal-monospace {
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}

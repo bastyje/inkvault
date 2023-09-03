@@ -1,0 +1,9 @@
+{
+  "include": ["src/electron/**/*"],
+  "compilerOptions": {
+    "outDir": "public",
+    "allowJs": true,
+    "noImplicitAny": false,
+    "verbatimModuleSyntax": false
+  }
+}

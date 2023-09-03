@@ -1,0 +1,10 @@
+{
+  "extends": "@tsconfig/svelte/tsconfig.json",
+  "include": ["src/**/*", "scripts/**/*"],
+  "exclude": ["src/electron/**/*"],
+  "compilerOptions": {
+    "noImplicitAny": false,
+    "verbatimModuleSyntax": false,
+    "types": ["svelte"]
+  }
+}

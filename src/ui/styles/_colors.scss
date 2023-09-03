@@ -1,0 +1,31 @@
+$primary-100: #A9CD95;
+$primary-70: #E0EDD9;
+
+$primary-30: #FDC59D;
+$primary-20: #FEECDE;
+$primary-10: #F6FAF4;
+
+$secondary-100: #D0E3C4;
+$secondary-70: #B4C2B8;
+$secondary-20: #EAEEEB;
+
+//$primary-100-text: #061523;
+$primary-100-text: #112A46;
+
+@use "sass:meta";
+
+:root {
+  --primary-100: #{meta.inspect($primary-100)};
+  --primary-70: #{meta.inspect($primary-70)};
+  --primary-30: #{meta.inspect($primary-30)};
+  --primary-20: #{meta.inspect($primary-20)};
+  --primary-10: #{meta.inspect($primary-10)};
+
+  --secondary-100: #{meta.inspect($secondary-100)};
+  --secondary-70: #{meta.inspect($secondary-70)};
+  --secondary-20: #{meta.inspect($secondary-20)};
+
+  --primary-100-text: #{meta.inspect($primary-100-text)};
+
+  --transparent: transparent
+}
