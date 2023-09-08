@@ -1,5 +1,5 @@
 export interface WebAuthnKeyInfo {
-  keyName?: string;
+  keyName: string;
   userDisplayName?: string;
   userEmail?: string;
   salt: ArrayLike<number>;

@@ -1,19 +1,19 @@
 <script lang="ts">
-  import { setContext } from "svelte";
-  import { TabStore, Tab } from "./tab-store";
-  import Example2 from "../Example2.svelte";
+  import { TabStore, Tab } from "../../storage/tab-store";
   import Hello from "../Hello.svelte";
-  import WebAuthnSettings from "../side-bar/types/settings/webauthn-settings/WebAuthnSettings.svelte";
+  import { TabStores } from "../../storage/tab-stores";
 
-  export let contextName: string;
+  let tabStore: TabStore;
 
-  const tabStore = new TabStore(
-    new Tab('Welcome', Hello, {}),
-    new Tab('example 1', WebAuthnSettings, {}),
-    new Tab('example 2', Example2, {})
-  );
+  TabStore.getName().then(n => {
+    if (n) {
+      TabStores.instance.add(n, new TabStore(
+        n,
+        new Tab('Welcome', Hello, {}),
+      ))
+    }
+  });
 
-  setContext(`tab-group-${contextName}`, tabStore);
 </script>
 
 <slot/>

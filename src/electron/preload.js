@@ -1,50 +1,50 @@
 const { contextBridge, ipcRenderer } = require("electron");
 
-
-
 contextBridge.exposeInMainWorld(
   "api", {
     windowManipulation: {
-      close: _ => { ipcRenderer.send('close') },
-      minimize: _ => { ipcRenderer.send('minimize') },
-      maximize: _ => { ipcRenderer.send('maximize') }
+      close: _ => { ipcRenderer.send('close'); },
+      minimize: _ => { ipcRenderer.send('minimize'); },
+      maximize: _ => { ipcRenderer.send('maximize'); }
     },
     fs: {
-      getFilesList: (root, relative) => {
-        return ipcRenderer.invoke('get-files-list', {
-          root: root,
-          relative: relative
-        })
+      getFileTree: path => {
+        return ipcRenderer.invoke('get-file-tree', { path });
       },
-      getFileTree: root => {
-        return ipcRenderer.invoke('get-file-tree', {
-          root: root
-        });
+      readFile: path => {
+        return ipcRenderer.invoke('read-file', { path });
       },
-      readFile: (root, relative) => {
-        return ipcRenderer.invoke('read-file', {
-          root: root,
-          relative: relative
-        });
+      readEncryptedFile: path => {
+        return ipcRenderer.invoke('read-encrypted-file', { path });
       },
       writeFile: (path, content) => {
-        ipcRenderer.send('write-file', path, content);
+        return ipcRenderer.invoke('write-file', { path, content });
       },
-      selectFromFileDialog: _ => {
-        return ipcRenderer.invoke('select-from-file-dialog');
+      writeEncryptedFile: (encryptionInfo, path) => {
+        return ipcRenderer.invoke('write-encrypted-file', { encryptionInfo, path });
+      },
+      createNewVault: _ => {
+        return ipcRenderer.invoke('create-new-vault');
+      },
+      getPreviouslyOpenedVault: _ => {
+        return ipcRenderer.invoke('get-previously-opened-vault');
+      },
+      getAllVaultsFromComputer: _ => {
+        return ipcRenderer.invoke('get-all-vaults-from-computer');
       }
     },
     webauthnKey: {
+      getKey: (root, keyName) => {
+        return ipcRenderer.invoke('get-key', { root, keyName });
+      },
       getKeys: root => {
-        return ipcRenderer.invoke('get-keys', {
-          root: root
-        })
+        return ipcRenderer.invoke('get-keys', { root });
       },
       createLocal: (root, keyInfo) => {
-        ipcRenderer.send('create-local-webauthn-key', root, keyInfo)
+        return ipcRenderer.invoke('create-local-webauthn-key', { root, keyInfo });
       },
       createGlobal: (root, keyInfo) => {
-        ipcRenderer.send('create-global-webauthn-key', root, keyInfo)
+        return ipcRenderer.invoke('create-global-webauthn-key', { root, keyInfo });
       }
     },
     events: {

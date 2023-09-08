@@ -1,3 +1,6 @@
+import { getTabsFromStorage, storeTabs } from "./storage";
+import { VaultStorage } from "./vault-storage";
+
 export class Tab {
   constructor(name: string, component: any, data: any) {
     this.name = name;
@@ -12,7 +15,7 @@ export class Tab {
 
 interface TabStoreEventType {
   selectedChanged: ((event: TabStoreEvent) => void)[],
-  tabCollectionChanged: ((event: TabStoreEvent) => void)[],
+  any: ((event: TabStoreEvent) => void)[],
   tabOpened: ((event: TabStoreEvent) => void)[],
   tabClosed: ((event: TabStoreEvent) => void)[]
 }
@@ -41,16 +44,23 @@ export class TabStore {
   private readonly _tabs: Tab[];
   private _subscribers: TabStoreEventType;
   private _selected: string;
+  private _name: string;
 
-  constructor(defaultTab: Tab, ...openedTabs: Tab[]) {
+  constructor(name: string, defaultTab: Tab, ...openedTabs: Tab[]) {
     this._subscribers = {
       selectedChanged: [],
       tabOpened: [],
       tabClosed: [],
-      tabCollectionChanged: []
+      any: []
     };
 
+    this._name = name;
     this._defaultTab = defaultTab;
+
+    const tabsFromStorage: Tab[] = getTabsFromStorage(this._name);
+    if (tabsFromStorage !== null && tabsFromStorage.length > 0) {
+      openedTabs = [...tabsFromStorage, ...openedTabs];
+    }
 
     if (openedTabs.length > 0) {
       this._tabs = openedTabs;
@@ -59,6 +69,16 @@ export class TabStore {
     }
 
     this._selected = this._tabs[0].name;
+
+    this.on('any', e => {
+      storeTabs(this._name, this._tabs);
+    });
+  }
+
+  public static getName(): Promise<string | null> {
+    return VaultStorage.instance.vault.then(vault => {
+      return vault === null ? null : `tab-group-${vault.name}`;
+    });
   }
 
   public getTabs = (): Tab[] => [...this._tabs];
@@ -71,7 +91,8 @@ export class TabStore {
 
   public openTab(tabName: string, component: any, data: any = null) {
     if (this._tabs.some(t => t.name === tabName)) {
-      throw new Error('Tab with this name already exists!')
+      this.selectTab(tabName);
+      return;
     }
 
     this._tabs.push(new Tab(tabName, component, data));
@@ -81,7 +102,12 @@ export class TabStore {
       selected: this._selected,
       openedTabName: tabName
     } as OpenedTabEvent);
-
+    this._emit({
+      type: 'any',
+      tabs: [...this._tabs],
+      selected: this._selected,
+      openedTabName: tabName
+    } as OpenedTabEvent);
     this.selectTab(tabName);
   }
 
@@ -89,6 +115,12 @@ export class TabStore {
     if (this._tabs.splice(this._tabs.findIndex(t => t.name === tabName), 1).length === 1) {
       this._emit({
         type: 'tabClosed',
+        tabs: [...this._tabs],
+        selected: this._selected,
+        closedTabName: tabName
+      } as ClosedTabEvent);
+      this._emit({
+        type: 'any',
         tabs: [...this._tabs],
         selected: this._selected,
         closedTabName: tabName
@@ -105,10 +137,18 @@ export class TabStore {
   }
 
   public selectTab(tabName: string) {
+    if (this._selected === tabName) return;
+
     if (this._tabs.some(t => t.name === tabName)) {
       this._selected = tabName;
       this._emit({
         type: 'selectedChanged',
+        tabs: [...this._tabs],
+        selected: this._selected,
+        selectedTabName: tabName
+      } as SelectedTabEvent);
+      this._emit({
+        type: 'any',
         tabs: [...this._tabs],
         selected: this._selected,
         selectedTabName: tabName

@@ -1,9 +1,9 @@
 <script lang="ts" generics="T extends TreeViewElement">
   import Leaf from "./Leaf.svelte";
+  import { TreeViewElement } from './tree-view-element';
 
   export let isRoot: boolean, name: string, children: T[], onLeafClick: (leaf: T) => void;
   let opened = false;
-  console.log(children)
 
   const toggle = () => {
     opened = !opened;

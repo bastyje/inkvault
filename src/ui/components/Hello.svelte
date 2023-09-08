@@ -1,15 +1,24 @@
-<div>Hello in Ink Vault!</div>
+<div class="container">
+  <h2 class="HUGE">Hello in Ink Vault!</h2>
+  <div class="content">
+    Welcome in secure note editor! In this application you can create and manage your notes in plain text but also with markdown support. Contents edited with this software can also be encrypted with WebAuthn protocol. For this purpose you can use ie. your YubiKey or any other device that supports WebAuthn PRF extension.
+  </div>
+</div>
+
 
 <style>
-  div {
+  .container {
     box-sizing: border-box;
-    padding: 1.19rem;
     width: 100%;
     height: 100%;
+    padding: 1.19rem;
+    display: flex;
+    flex-direction: column;
     background-color: var(--primary-10);
-    color: var(--primary-100-text, #112A46);
-    font-size: 3.05188rem;
-    font-style: normal;
-    font-weight: 700;
+  }
+
+  .content {
+    margin: 35px 7%;
+    height: 100%;
   }
 </style>

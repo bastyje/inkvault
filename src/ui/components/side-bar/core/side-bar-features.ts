@@ -1,5 +1,6 @@
 import FilesSideBar from "../types/files/FilesSideBar.svelte";
 import SettingsSideBar from "../types/settings/SettingsSideBar.svelte";
+import { VaultStorage } from "../../../storage/vault-storage";
 
 export interface SideBarTitleAction {
   name: string;
@@ -31,8 +32,10 @@ export const SIDE_BAR_FEATURES: SideBarFeature[] = [
         name: 'openVault',
         icon: 'icons/plus.svg',
         handler: () => {
-          window.api.fs.selectFromFileDialog().then(path => {
-            console.log(path);
+          window.api.fs.createNewVault().then(path => {
+            if (path !== null) {
+              VaultStorage.instance.changeVault({path})
+            }
           })
         }
       }

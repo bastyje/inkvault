@@ -1,41 +1,44 @@
 <script>
-  import { getContext} from "svelte";
   import Tab from "./Tab.svelte";
   import SmallIconButton from "../buttons/SmallIconButton.svelte";
-  import TextEditor from "../TextEditor.svelte";
+  import TextEditor from "../text-editor/TextEditor.svelte";
+  import { TabStore } from "../../storage/tab-store";
+  import { TabStores } from "../../storage/tab-stores";
 
-  export let contextName;
+  let tabStore, tabs = [], selectedName;
+  let changeSelection, openTab, closeTab;
+  TabStore.getName().then(n => {
+    tabStore = TabStores.instance.get(n);
+    tabs = tabStore.getTabs();
+    selectedName = tabStore.getSelectedName();
 
-  const tabStore = getContext(`tab-group-${contextName}`);
-  let tabs = tabStore.getTabs();
-  let selectedName = tabStore.getSelectedName();
+    tabStore.on('selectedChanged', e => {
+      selectedName = e.selectedTabName;
+    });
 
-  tabStore.on('selectedChanged', e => {
-    selectedName = e.selectedTabName;
+    tabStore.on('tabOpened', e => {
+      selectedName = e.selected;
+      tabs = e.tabs;
+    });
+
+    tabStore.on('tabClosed', e => {
+      selectedName = e.selected;
+      tabs = e.tabs;
+    });
+
+    changeSelection = (event) => {
+      tabStore.selectTab(event.detail.tabName);
+    };
+
+    openTab = () => {
+      tabStore.openTab('new-file', TextEditor, {path: 'new-file'});
+    };
+
+    closeTab = (e) => {
+      tabStore.closeTab(e.detail.tabName);
+    };
   });
 
-  tabStore.on('tabOpened', e => {
-    selectedName = e.selected;
-    tabs = e.tabs;
-  });
-
-
-  tabStore.on('tabClosed', e => {
-    selectedName = e.selected;
-    tabs = e.tabs;
-  });
-
-  const changeSelection = (event) => {
-    tabStore.selectTab(event.detail.tabName);
-  }
-
-  const openTab = () => {
-    tabStore.openTab('Test', TextEditor);
-  }
-
-  const closeTab = (e) => {
-    tabStore.closeTab(e.detail.tabName);
-  }
 </script>
 
 <div class="tabs-container">

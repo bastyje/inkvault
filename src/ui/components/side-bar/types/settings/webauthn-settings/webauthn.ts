@@ -103,11 +103,10 @@ export const encrypt = async (salt: Uint8Array, data: string, nonce: Uint8Array,
 };
 
 export const decrypt = async (salt: Uint8Array, data: string, nonce: Uint8Array, rawId: Uint8Array, transports: string[]): Promise<string> => {
-  const privateKey = await getPrivateKey(salt, rawId, transports);
-  const decrypted = await crypto.subtle.decrypt(
-    { name: "AES-GCM", iv: nonce },
-    privateKey,
-    Uint8Array.from(atob(data), c => c.charCodeAt(0))
-  )
-  return new TextDecoder().decode(decrypted);
+  return getPrivateKey(salt, rawId, transports)
+    .then(privateKey => crypto.subtle.decrypt(
+      { name: "AES-GCM", iv: nonce },
+      privateKey,
+      Uint8Array.from(atob(data), c => c.charCodeAt(0)))
+      .then(decrypted => new TextDecoder().decode(decrypted)));
 };

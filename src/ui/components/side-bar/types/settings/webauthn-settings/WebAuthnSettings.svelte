@@ -9,11 +9,22 @@ import TextButton from "../../../../buttons/TextButton.svelte";
 import { WebAuthnKeyInfo } from "../../../../../../shared/web-authn-key-info";
 import { shouldNotBeEmpty } from "../../../../../validation/guard";
 import { register } from "./webauthn";
+import { VaultStorage } from "../../../../../storage/vault-storage";
 
 let name: string, userDisplayName: string, userEmail: string, salt: string;
 
 let data: WebAuthnKeyInfo[] = [];
-window.api.webauthnKey.getKeys('C:\\Users\\sebas\\test').then(d => { data = d; });
+const vaultStorage = VaultStorage.instance;
+
+vaultStorage.vault.then(v => {
+  if (v !== null) {
+    data = v.keys;
+  }
+})
+
+vaultStorage.on('change', e => {
+  data = e.vault.keys;
+});
 
 const localId = 'local', globalId = 'global';
 
@@ -35,14 +46,21 @@ const onSubmit = (e: SubmitEvent) => {
     keyInfo.keyName = name;
     keyInfo.salt = Array.from(keyInfo.salt);
     keyInfo.rawId = Array.from(keyInfo.rawId);
+
+    const promises = [];
+
     switch (e.submitter?.id) {
       case localId:
-        window.api.webauthnKey.createLocal('C:\\Users\\sebas\\test', keyInfo);
+        window.api.webauthnKey.createLocal('C:\\Users\\sebas\\test', keyInfo).then(_ => {
+          window.api.webauthnKey.getKeys('C:\\Users\\sebas\\test').then(d => { data = d; });
+        });
         break;
       case globalId:
         window.api.webauthnKey.createGlobal('C:\\Users\\sebas\\test', keyInfo);
         break;
     }
+
+    (e.target as HTMLFormElement).reset();
   });
 }
 

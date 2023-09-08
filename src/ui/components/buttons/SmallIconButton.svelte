@@ -1,5 +1,5 @@
 <script>
-    export let iconSrc, alt, onClick, height, width, color, hoverColor;
+    export let iconSrc, alt, onClick, height, width, color, hoverColor, imgStyle = '';
 </script>
 
 <button
@@ -10,7 +10,7 @@
   style:--color="var({color})"
   style:--hover-color="var({hoverColor})"
 >
-  <img class="non-selectable" draggable="false" src={iconSrc} alt={alt}>
+  <img class="non-selectable" draggable="false" src={iconSrc} alt={alt} style={imgStyle}>
 </button>
 
 <style lang="scss">
