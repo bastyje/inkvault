@@ -1,6 +1,6 @@
 <script lang="ts">
   import TextEditor from "../../../text-editor/TextEditor.svelte";
-  import List from "../../../list/tree-list-object/List.svelte";
+  import List from "../../../list/tree-list/TreeList.svelte";
   import { FileSidebarElement } from "./file-sidebar-element";
   import { TabStore } from "../../../../storage/tab-store";
   import { FileInfo } from "../../../../../shared/file-info";
@@ -9,13 +9,16 @@
   import { VaultData } from "../../../../../shared/vault-info";
   import { TabStores } from "../../../../storage/tab-stores";
 
-  let vault: VaultData | null, tabStore: TabStore;
+  export let opened: boolean = false;
+  let vault: VaultData | null, tabStore: TabStore | null;
   let onLeafClick;
   TabStore.getName().then(n => {
     tabStore = TabStores.instance.get(n);
 
     onLeafClick = (file: FileSidebarElement) => {
-      tabStore.openTab(file.name, TextEditor, { path: file.path });
+      if (tabStore !== null) {
+        tabStore.openTab(file.name, TextEditor, {path: file.path});
+      }
     };
   });
 
@@ -48,11 +51,21 @@
   });
 </script>
 
-{#if vault !== null}
-  <List
-    elements={files.children}
-    {onLeafClick}
-  />
-{:else }
-  No vault is open
-{/if}
+
+<div class:hidden={!opened}>
+  {#if vault !== null}
+    <List
+      elements={files.children}
+      {onLeafClick}
+    />
+  {:else }
+    No vault is open
+  {/if}
+</div>
+
+
+<style>
+  .hidden {
+    display: none;
+  }
+</style>

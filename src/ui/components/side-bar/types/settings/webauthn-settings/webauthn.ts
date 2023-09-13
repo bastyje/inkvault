@@ -24,6 +24,7 @@ export const register = async (email: string, displayName: string, salt: Uint8Ar
   };
 
   const credential = await navigator.credentials.create(credentialCreationOptions);
+  //@ts-ignore
   return {
     // @ts-ignore
     rawId: new Uint8Array(credential.rawId),

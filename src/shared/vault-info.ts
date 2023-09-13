@@ -1,6 +1,7 @@
 import { WebAuthnKeyInfo } from "./web-authn-key-info";
 
 export interface VaultInfo {
+  name: string;
   path: string;
 }
 

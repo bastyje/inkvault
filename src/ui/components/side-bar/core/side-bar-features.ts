@@ -1,6 +1,8 @@
 import FilesSideBar from "../types/files/FilesSideBar.svelte";
 import SettingsSideBar from "../types/settings/SettingsSideBar.svelte";
 import { VaultStorage } from "../../../storage/vault-storage";
+import ProjectsSideBar from "../types/projects/ProjectsSideBar.svelte";
+import HelpSideBar from "../types/help/HelpSideBar.svelte";
 
 export interface SideBarTitleAction {
   name: string;
@@ -24,6 +26,12 @@ export const EMPTY_FEATURE: SideBarFeature = {
 
 export const SIDE_BAR_FEATURES: SideBarFeature[] = [
   {
+    name: 'projects',
+    icon: 'icons/folder.svg',
+    component: ProjectsSideBar,
+    actions: []
+  },
+  {
     name: 'notes',
     icon: 'icons/notes.svg',
     component: FilesSideBar,
@@ -32,11 +40,7 @@ export const SIDE_BAR_FEATURES: SideBarFeature[] = [
         name: 'openVault',
         icon: 'icons/plus.svg',
         handler: () => {
-          window.api.fs.createNewVault().then(path => {
-            if (path !== null) {
-              VaultStorage.instance.changeVault({path})
-            }
-          })
+
         }
       }
     ]
@@ -50,7 +54,7 @@ export const SIDE_BAR_FEATURES: SideBarFeature[] = [
   {
     name: 'help',
     icon: 'icons/help.svg',
-    component: null,
+    component: HelpSideBar,
     actions: []
   },
 ];

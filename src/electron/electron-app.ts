@@ -98,30 +98,30 @@ export class ElectronApp {
       return await getFileTree(args.path);
     });
 
-    ipcMain.handle('create-new-vault', async () => {
+    ipcMain.handle('get-path-from-modal', async () => {
       return dialog.showOpenDialog(this._mainWindow!, {
-        title: 'Select location of new vault',
+        title: 'Select directory',
         defaultPath: app.getPath('home'),
         properties: ['openDirectory']
       }).then(result => {
-        if (!result.canceled && result.filePaths.length === 1) {
-          const dirPath = result.filePaths[0];
-          const dotDirPath = path.join(dirPath, DOT_DIRECTORY);
-          return fs.promises.mkdir(dotDirPath).then(_ => {
-            const vaultsPath = path.join(app.getPath('userData'), VAULTS_FILE);
-            const vaults: VaultInfo[] = [{path: dirPath}];
-            fs.promises.readFile(vaultsPath, {encoding: 'utf-8'}).then(fileText => {
-              vaults.push(...JSON.parse(fileText) as VaultInfo[]);
-            }).finally(() => {
-              fs.promises.writeFile(vaultsPath, JSON.stringify(vaults), {encoding: 'utf-8'});
-            });
-            return fs.promises.writeFile(path.join(dotDirPath, WEBAUTHN_KEYS_FILE), '[]').then(_ => {
-              return dirPath;
-            });
-          }).catch(_ => dirPath);
-        }
-        return null;
+        return result.canceled || result.filePaths.length !== 1 ? null : result.filePaths[0];
       })
+    });
+
+    ipcMain.handle('create-new-vault', async (event, args) => {
+      const dirPath = args.path;
+      if (!fs.existsSync(dirPath)) return null;
+      const dotDirPath = path.join(dirPath, DOT_DIRECTORY);
+      return fs.promises.mkdir(dotDirPath).then(_ => {
+        const vaultsPath = path.join(app.getPath('userData'), VAULTS_FILE);
+        const vaults: VaultInfo[] = [{name: args.name, path: dirPath}];
+        fs.promises.readFile(vaultsPath, {encoding: 'utf-8'}).then(fileText => {
+          vaults.push(...JSON.parse(fileText) as VaultInfo[]);
+        }).finally(() => {
+          fs.promises.writeFile(vaultsPath, JSON.stringify(vaults), {encoding: 'utf-8'});
+        });
+        return fs.promises.writeFile(path.join(dotDirPath, WEBAUTHN_KEYS_FILE), '[]');
+      }).catch();
     });
 
     ipcMain.handle('write-file', async (event, args) => {
@@ -148,7 +148,7 @@ export class ElectronApp {
     }
 
     ipcMain.handle('create-local-webauthn-key', async (event, args) => {
-      const filePath = path.join(args.root, WEBAUTHN_KEYS_FILE);
+      const filePath = path.join(args.root,DOT_DIRECTORY, WEBAUTHN_KEYS_FILE);
       return createWebAuthnKey(filePath, args.keyInfo);
     });
 

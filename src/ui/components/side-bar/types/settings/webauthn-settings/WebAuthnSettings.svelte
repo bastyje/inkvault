@@ -17,13 +17,15 @@ let data: WebAuthnKeyInfo[] = [];
 const vaultStorage = VaultStorage.instance;
 
 vaultStorage.vault.then(v => {
+  console.log(v)
   if (v !== null) {
     data = v.keys;
   }
-})
+});
 
 vaultStorage.on('change', e => {
   data = e.vault.keys;
+  console.log('data', data)
 });
 
 const localId = 'local', globalId = 'global';
@@ -47,16 +49,24 @@ const onSubmit = (e: SubmitEvent) => {
     keyInfo.salt = Array.from(keyInfo.salt);
     keyInfo.rawId = Array.from(keyInfo.rawId);
 
-    const promises = [];
-
     switch (e.submitter?.id) {
       case localId:
-        window.api.webauthnKey.createLocal('C:\\Users\\sebas\\test', keyInfo).then(_ => {
-          window.api.webauthnKey.getKeys('C:\\Users\\sebas\\test').then(d => { data = d; });
+        vaultStorage.vault.then(v => {
+          if (v !== null) {
+            window.api.webauthnKey.createLocal(v.path, keyInfo).then(_ => {
+              window.api.webauthnKey.getKeys(v.path).then(d => { data = d; });
+            });
+          }
         });
         break;
       case globalId:
-        window.api.webauthnKey.createGlobal('C:\\Users\\sebas\\test', keyInfo);
+        vaultStorage.vault.then(v => {
+          if (v !== null) {
+            window.api.webauthnKey.createLocal(v.path, keyInfo).then(_ => {
+              window.api.webauthnKey.getKeys(v.path).then(d => { data = d; });
+            });
+          }
+        });
         break;
     }
 

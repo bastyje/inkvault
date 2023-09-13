@@ -27,11 +27,11 @@ export class VaultStorage {
     if (vaultInfo !== null) {
       this._promise = window.api.webauthnKey.getKeys(vaultInfo.path).then(k => {
         this._vault = {
-          name: vaultInfo.path.replace(/^.*[\\\/]/, ''),
+          name: vaultInfo.name,
           path: vaultInfo.path,
           keys: k
         }
-      })
+      });
     }
 
     this._subscribers = {
@@ -56,14 +56,22 @@ export class VaultStorage {
 
   public changeVault(vaultInfo: VaultInfo): void {
     this._setOpenedVault(vaultInfo);
-    this._emit({
-      type: 'change',
-      vault: vaultInfo
-    } as VaultStorageEvent);
-    this._emit({
-      type: 'any',
-      vault: vaultInfo
-    } as VaultStorageEvent);
+    window.api.webauthnKey.getKeys(vaultInfo.path).then(k => {
+      this._vault = {
+        name: vaultInfo.name,
+        path: vaultInfo.path,
+        keys: k
+      };
+      this._emit({
+        type: 'change',
+        vault: this._vault
+      } as VaultStorageEvent);
+      this._emit({
+        type: 'any',
+        vault: this._vault
+      } as VaultStorageEvent);
+      console.log(this._subscribers)
+    });
   }
 
   private _emit(event: VaultStorageEvent): void {

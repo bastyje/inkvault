@@ -1,4 +1,4 @@
-import { TreeViewElement } from "../../../list/tree-list-object/tree-view-element";
+import { TreeViewElement } from "../../../list/tree-list/tree-view-element";
 // @ts-ignore TODO
 import WebAuthnSettings from "./webauthn-settings/WebAuthnSettings.svelte";
 

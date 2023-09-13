@@ -44,7 +44,7 @@ export class TabStore {
   private readonly _tabs: Tab[];
   private _subscribers: TabStoreEventType;
   private _selected: string;
-  private _name: string;
+  private readonly _name: string;
 
   constructor(name: string, defaultTab: Tab, ...openedTabs: Tab[]) {
     this._subscribers = {

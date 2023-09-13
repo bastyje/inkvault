@@ -3,8 +3,6 @@
   import Hello from "../Hello.svelte";
   import { TabStores } from "../../storage/tab-stores";
 
-  let tabStore: TabStore;
-
   TabStore.getName().then(n => {
     if (n) {
       TabStores.instance.add(n, new TabStore(

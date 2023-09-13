@@ -1,29 +1,28 @@
 <script lang="ts">
   import { SideBarFeature } from "./side-bar-features";
   import SmallIconButton from "../../buttons/SmallIconButton.svelte";
+  import { onMount } from "svelte";
 
-  export let feature: SideBarFeature;
+  export let feature: SideBarFeature, ref: any, opened: boolean;
 </script>
 
-{#if feature.component}
-  <div class="container">
-    <div class="header">
-      <h2 class="normal">{feature.name}</h2>
-      {#each feature.actions as action}
-        <SmallIconButton
-          color="--transparent"
-          hoverColor="--primary-100"
-          iconSrc={action.icon}
-          alt={action.name}
-          onClick={action.handler}
-          width={21}
-          height={21}
-        />
-      {/each}
-    </div>
-    <svelte:component this={feature.component}/>
+<div class:hide={!opened} class="container">
+  <div class="header">
+    <h2 class="normal">{feature.name}</h2>
+    {#each feature.actions as action}
+      <SmallIconButton
+        color="--transparent"
+        hoverColor="--primary-100"
+        iconSrc={action.icon}
+        alt={action.name}
+        onClick={action.handler}
+        width={21}
+        height={21}
+      />
+    {/each}
   </div>
-{/if}
+  <div bind:this={ref}></div>
+</div>
 
 <style>
   .container {
@@ -42,4 +41,7 @@
     text-transform: uppercase;
   }
 
+  .hide {
+    display: none;
+  }
 </style>

@@ -23,14 +23,17 @@ contextBridge.exposeInMainWorld(
       writeEncryptedFile: (encryptionInfo, path) => {
         return ipcRenderer.invoke('write-encrypted-file', { encryptionInfo, path });
       },
-      createNewVault: _ => {
-        return ipcRenderer.invoke('create-new-vault');
+      createNewVault: (path, name) => {
+        return ipcRenderer.invoke('create-new-vault', {path, name});
       },
       getPreviouslyOpenedVault: _ => {
         return ipcRenderer.invoke('get-previously-opened-vault');
       },
       getAllVaultsFromComputer: _ => {
         return ipcRenderer.invoke('get-all-vaults-from-computer');
+      },
+      getPathFromModal: _ => {
+        return ipcRenderer.invoke('get-path-from-modal');
       }
     },
     webauthnKey: {

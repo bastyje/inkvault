@@ -1,38 +1,13 @@
-<script>
-  import LeafNode from "./LeafNode.svelte";
-  import InternalNode from "./InternalNode.svelte";
+<script lang="ts" generics="T extends TreeViewElement">
+  import Node from "./Node.svelte";
+  import { TreeViewElement} from "./tree-view-element";
 
-  export let elementNameSelector, isLeafSelector, getChildrenCallback, relativePath, leafClickAction;
-  let list = [];
-  getChildrenCallback(relativePath).then(r => { list = r; });
+  export let elements: T[], onLeafClick: (leaf: T) => void;
 </script>
 
-<ul>
-  {#each list as elem}
-    <li>
-      {#if isLeafSelector(elem)}
-        <LeafNode
-          name={elementNameSelector(elem)}
-          leafClickAction={leafClickAction}
-          relativePath="{relativePath}"
-        />
-      {:else}
-        <InternalNode
-          name={elementNameSelector(elem)}
-          getChildrenCallback={getChildrenCallback}
-          isLeafSelector={isLeafSelector}
-          elementNameSelector={elementNameSelector}
-          relativePath={relativePath}
-          leafClickAction={leafClickAction}
-        />
-      {/if}
-    </li>
-  {/each}
-</ul>
-
-<style>
-  ul {
-    margin-left: 15px;
-    box-sizing: border-box;
-  }
-</style>
+<Node
+  onLeafClick={onLeafClick}
+  children={elements}
+  isRoot={true}
+  name="root"
+/>

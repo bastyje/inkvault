@@ -1,6 +1,5 @@
 import { mapComponentToString, mapStringToComponent } from "../components/component-mappings";
 import { Tab } from "./tab-store";
-import { VaultInfo } from "../../shared/vault-info";
 
 export const getTabsFromStorage = (tabGroupName: string): Tab[] => {
   const objectFromStorage = JSON.parse(localStorage.getItem(tabGroupName)!);

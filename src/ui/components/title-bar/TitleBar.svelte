@@ -1,7 +1,6 @@
 <script>
   import TitleBarButtons from "./TitleBarButtons.svelte";
   import TabBar from "../tabs/TabBar.svelte";
-  import { MAIN_TAB_BAR_NAME } from "../tabs/tab-bars-names";
 </script>
 
 <nav class="title-bar">

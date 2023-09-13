@@ -18,7 +18,8 @@ export class TabStores {
     this.tabStores.push({key, tabStore});
   }
 
-  public get(key: string): TabStore | null {
+  public get(key: string| null): TabStore | null {
+    if (key === null) return null;
     const found = this.tabStores.find(t => t.key === key);
     return found !== undefined ? found.tabStore : null;
   }

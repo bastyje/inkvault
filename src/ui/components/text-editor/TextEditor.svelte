@@ -73,8 +73,6 @@
   };
 
   const onKeydown = (e: KeyboardEvent) => {
-    window.api.fs.getAllVaultsFromComputer().then(r => {
-    })
     if (e.ctrlKey && e.key === 's') {
       window.api.fs.writeFile(path, fileContent).then(_ => {
         saved = true;
